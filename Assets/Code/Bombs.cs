@@ -73,6 +73,10 @@ namespace Client {
                 var bombEntity = bombsFilter.GetEntity(i);
                 var bomb = bombsFilter.Get1(i);
 
+                ref var explosion = ref world.NewEntity().Set<Explosion>();
+                explosion.center = bomb.view.transform.position;
+                explosion.radius = 5;
+
                 GameObject.Destroy(bomb.view.gameObject);
                 bombEntity.Destroy();
             }
