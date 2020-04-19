@@ -24,6 +24,8 @@ public class Setup : MonoBehaviour
             .Add(new SpawnBombsSystem(bombPrefab, 15, 15, new Timers.SpawnTimer(5, 1, 3)))
             .Add(new DetonatedBombBombSystem())
             .Add(new ExplosionSystem())
+
+            .Add(new CharacterDamageReleaseSystem());
         ;
 
         this.systems.Init();

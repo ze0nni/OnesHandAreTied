@@ -11,6 +11,11 @@ namespace Client
     public struct Character
     {
         public CharacterView view;
+        public float health;
+        
+        // ТК большую часть времени список будет пустым, используем linkedlist,
+        // что уменьшает вероятность промахов кеша процессора, как если бы мы использовали 
+        // List<>
         public Damage damage;
     }
 
@@ -67,6 +72,25 @@ namespace Client
             character.view = characterView;
 
             characterView.entity = characterEntity;
+        }
+    }
+
+    sealed class CharacterDamageReleaseSystem: IEcsRunSystem
+    {
+        readonly EcsFilter<Character> charactersFilter = null;
+
+        public void Run()
+        {
+            foreach (var i in charactersFilter) {
+                ref var character = ref charactersFilter.Get1(i);
+                var damage = character.damage;
+                character.damage = null;
+
+                while (null != damage) {
+                    character.health -= damage.value;
+                    damage = damage.next;
+                }
+            }
         }
     }
 }
