@@ -106,6 +106,12 @@ namespace Client
                     character.health -= damage.value;
                     damage = damage.next;
                 }
+
+                // Это надо было бы оформить еще в минимум одну систему =)
+                if (character.health <= 0) {
+                    GameObject.Destroy(character.view.gameObject);
+                    charactersFilter.GetEntity(i).Destroy();
+                }
             }
         }
     }
