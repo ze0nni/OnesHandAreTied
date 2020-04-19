@@ -17,6 +17,7 @@ namespace Client {
     {
         readonly EcsWorld world = null;
         readonly EcsFilter<Explosion> explosionsFilter = null;
+        readonly EcsFilter<Character> charactersFilter = null;
 
         public void Run()
         {
@@ -33,18 +34,20 @@ namespace Client {
         readonly private Collider[] colliders = new Collider[256];
 
         private void ApplyExplosion(Vector3 center, float radius) {
-            var size = Physics.OverlapSphereNonAlloc(center, radius, colliders);
-            for (var i = 0; i < size; i++) {
-                var characterView = colliders[i].gameObject.GetComponent<CharacterView>();
-                if (null != characterView) {
-                    ApplyExplosionToCharacter(center, radius, characterView);
+            foreach (var i in charactersFilter) {
+                ref var character = ref charactersFilter.Get1(i);
+                // Конечно же тут не стоит делать ' character.view.transform.position' лучше сохранить
+                // Vector3 прямо character, тогда будет меньше промохов кеша
+                var distance = Vector3.Distance(center, character.view.transform.position);
+
+                if (distance <= radius) {
+                    ApplyExplosionToCharacter(center, radius, distance, ref character);
                 }
             }
         }
 
-        private void ApplyExplosionToCharacter(Vector3 center, float radius, CharacterView characterView) {
-            characterView.entity.Destroy();
-            GameObject.Destroy(characterView.gameObject);
+        private void ApplyExplosionToCharacter(Vector3 center, float radius, float distance, ref Character character) {
+            character.damage = new Damage(1, character.damage);
         }
     }
 }

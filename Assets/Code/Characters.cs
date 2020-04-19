@@ -8,9 +8,22 @@ using UnityEngine;
 
 namespace Client
 {
-    struct Character
+    public struct Character
     {
         public CharacterView view;
+        public Damage damage;
+    }
+
+    sealed public class Damage {
+        
+        public float value;
+        public Damage next;
+
+        public Damage(float value, Damage next)
+        {
+            this.value = value;
+            this.next = next;
+        }
     }
 
     sealed class SpawnCharactersSystem : IEcsRunSystem
