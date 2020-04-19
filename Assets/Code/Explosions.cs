@@ -13,8 +13,26 @@ namespace Client {
         public float radius;
     }
 
+    public interface ExplosionDamageComputer {
+        float Compute(
+            float currentDamage,
+            Vector3 explosionCenter,
+            float explsionRadius,
+            Vector3 characterPosition,
+            float distance
+        );
+    }
+
     sealed class ExplosionSystem : IEcsRunSystem
     {
+        ExplosionDamageComputer[] damageComputers;
+
+        public ExplosionSystem(
+            params ExplosionDamageComputer[] damageComputers
+        ) {
+            this.damageComputers = damageComputers; ;
+        }
+
         readonly EcsWorld world = null;
         readonly EcsFilter<Explosion> explosionsFilter = null;
         readonly EcsFilter<Character> charactersFilter = null;
@@ -31,8 +49,6 @@ namespace Client {
             }
         }
 
-        readonly private Collider[] colliders = new Collider[256];
-
         private void ApplyExplosion(Vector3 center, float radius) {
             foreach (var i in charactersFilter) {
                 ref var character = ref charactersFilter.Get1(i);
@@ -44,7 +60,24 @@ namespace Client {
         }
 
         private void ApplyExplosionToCharacter(Vector3 center, float radius, float distance, ref Character character) {
-            character.damage = new Damage(1, character.damage);
+            var characterPosition = character.position;
+            var damage = damageComputers
+                .Aggregate(
+                    1f,
+                    (acc, computer) => computer.Compute(acc, center, radius, characterPosition, distance)
+                )
+            ;
+
+
+            character.damage = new Damage(damage, character.damage);
+        }
+    }
+
+    sealed class ExplosionDamageFromDistanceRatio : ExplosionDamageComputer
+    {
+        public float Compute(float currentDamage, Vector3 explosionCenter, float explsionRadius, Vector3 characterPosition, float distance)
+        {
+            return currentDamage * (1 - (distance / explsionRadius));
         }
     }
 }
