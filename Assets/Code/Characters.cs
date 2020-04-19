@@ -11,6 +11,7 @@ namespace Client
     public struct Character
     {
         public CharacterView view;
+        public Vector3 position;
         public float health;
         
         // ТК большую часть времени список будет пустым, используем linkedlist,
@@ -70,8 +71,23 @@ namespace Client
             ref var character = ref characterEntity.Set<Character>();
 
             character.view = characterView;
+            character.health = 1;
 
             characterView.entity = characterEntity;
+        }
+    }
+
+    sealed class CharacterSyncSystem: IEcsRunSystem {
+        readonly EcsFilter<Character> charactersFilter = null;
+
+        public void Run()
+        {
+            foreach (var i in charactersFilter)
+            {
+                ref var character = ref charactersFilter.Get1(i);
+                character.position = character.view.transform.position;
+                character.view.health = character.health;
+            }
         }
     }
 
