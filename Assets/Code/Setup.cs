@@ -20,10 +20,10 @@ public class Setup : MonoBehaviour
 #endif
 
         this.systems = new EcsSystems(world)
-            .Add(new SpawnCharactersSystem(characterPrefab, 15, new Timers.SpawnTimer(10, 0.5f, 3)))
+            .Add(new SpawnCharactersSystem(characterPrefab, 30, new Timers.SpawnTimer(10, 0.5f, 3)))
             .Add(new CharacterSyncSystem())
 
-            .Add(new SpawnBombsSystem(bombPrefab, 15, 15, new Timers.SpawnTimer(5, 1, 3)))
+            .Add(new SpawnBombsSystem(bombPrefab, 30, 15, new Timers.SpawnTimer(5, 1, 3)))
             .Add(new DetonatedBombBombSystem())
             .Add(new ExplosionSystem(new ExplosionDamageFromDistanceRatio()))
 
