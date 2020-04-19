@@ -7,8 +7,15 @@ public class BombView : MonoBehaviour
 {
     public EcsEntity entity;
 
+    public delegate void OnDetonate(EcsEntity entity);
+    public OnDetonate onDetonate;
+
     void Update()
     {
         
+    }
+
+    void OnCollisionEnter(Collision collision) {
+        onDetonate?.Invoke(entity);
     }
 }

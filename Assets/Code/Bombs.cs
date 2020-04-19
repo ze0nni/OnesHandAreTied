@@ -8,6 +8,10 @@ namespace Client {
         public BombView view;
     }
 
+    struct DetonatedBomb {
+        
+    }
+
     sealed class SpawnBombsSystem : IEcsRunSystem {
 
         readonly GameObject bombPrefab;
@@ -48,7 +52,13 @@ namespace Client {
             var bomb = bombEntity.Set<Bomb>();
 
             bomb.view = bombView;
+
             bombView.entity = bombEntity;
+            bombView.onDetonate = OnDetonate;
+        }
+
+        private void OnDetonate(EcsEntity bombEntity) {
+            bombEntity.Set<DetonatedBomb>();
         }
     }
 }
