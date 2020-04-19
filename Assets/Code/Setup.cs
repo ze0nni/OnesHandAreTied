@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Leopotam.Ecs;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,4 +9,25 @@ public class Setup : MonoBehaviour
 
     public GameObject bombPrefab;
     public GameObject characterPrefab;
+
+    private EcsSystems systems;
+
+    void Start() {
+        var world = new EcsWorld();
+#if UNITY_EDITOR
+        Leopotam.Ecs.UnityIntegration.EcsWorldObserver.Create(world);
+#endif
+
+        this.systems = new EcsSystems(world);
+
+        this.systems.Init();
+#if UNITY_EDITOR
+        Leopotam.Ecs.UnityIntegration.EcsSystemsObserver.Create(systems);
+#endif
+    }
+
+    private void Update()
+    {
+        systems.Run();
+    }
 }
