@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace Client {
 
+    struct Bomb {
+        public BombView view;
+    }
+
     sealed class SpawnBombsSystem : IEcsRunSystem {
 
         readonly GameObject bombPrefab;
@@ -24,17 +28,27 @@ namespace Client {
             this.spawnTimer = spawnTimer;
         }
 
-        readonly EcsWorld _world = null;
+        readonly EcsWorld world = null;
+        readonly EcsFilter<Bomb> bombsFilter = null;
 
         void IEcsRunSystem.Run () {
-            if (spawnTimer.Tirgger(0, Time.deltaTime)) {
-                var bomb = GameObject.Instantiate(bombPrefab);
-                bomb.transform.position = new Vector3(
-                    (Random.value - 0.5f) * generationRadius,
-                    generationHeight,
-                    (Random.value - 0.5f) * generationRadius
-                );
+            if (false == spawnTimer.Tirgger(bombsFilter.GetEntitiesCount(), Time.deltaTime))
+            {
+                return;
             }
+
+            var bombView = GameObject.Instantiate(bombPrefab).GetComponent<BombView>();
+            bombView.transform.position = new Vector3(
+                (Random.value - 0.5f) * generationRadius,
+                generationHeight,
+                (Random.value - 0.5f) * generationRadius
+            );
+
+            var bombEntity = world.NewEntity();
+            var bomb = bombEntity.Set<Bomb>();
+
+            bomb.view = bombView;
+            bombView.entity = bombEntity;
         }
     }
 }
