@@ -1,4 +1,5 @@
-﻿using Leopotam.Ecs;
+﻿using Client;
+using Leopotam.Ecs;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,7 +19,8 @@ public class Setup : MonoBehaviour
         Leopotam.Ecs.UnityIntegration.EcsWorldObserver.Create(world);
 #endif
 
-        this.systems = new EcsSystems(world);
+        this.systems = new EcsSystems(world)
+            .Add(new SpawnBombsSystem(bombPrefab, new Timers.SpawnTimer(5, 1, 3)));
 
         this.systems.Init();
 #if UNITY_EDITOR
