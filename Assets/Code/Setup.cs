@@ -25,7 +25,7 @@ public class Setup : MonoBehaviour
 
             .Add(new SpawnBombsSystem(bombPrefab, 30, 15, new Timers.SpawnTimer(5, 1, 3)))
             .Add(new DetonatedBombBombSystem())
-            .Add(new ExplosionSystem(new ExplosionDamageFromDistanceRatio()))
+            .Add(new ExplosionSystem(new ExplosionDamageFromDistanceRatio(), new ExplosionDamageAbsorbByWalls(0.5f, LayerMask.GetMask("Wall"))))
 
             .Add(new CharacterDamageReleaseSystem());
         ;

@@ -80,4 +80,31 @@ namespace Client {
             return currentDamage * (1 - (distance / explsionRadius));
         }
     }
+
+    sealed class ExplosionDamageAbsorbByWalls : ExplosionDamageComputer {
+        readonly float damageScale;
+        readonly LayerMask wallMask;
+
+        public ExplosionDamageAbsorbByWalls(float damageScale, LayerMask wallMask)
+        {
+            this.damageScale = damageScale;
+            this.wallMask = wallMask;
+        }
+
+        public float Compute(float currentDamage, Vector3 explosionCenter, float explsionRadius, Vector3 characterPosition, float distance)
+        {
+            var result = Physics.RaycastAll(
+                explosionCenter,
+                characterPosition - explosionCenter,
+                distance,
+                wallMask
+            ).Length;
+
+            for (var i = 0; i < result; i++) {
+                currentDamage *= damageScale;
+            }
+
+            return currentDamage;
+        }
+    }
 }
