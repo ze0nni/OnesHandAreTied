@@ -9,6 +9,7 @@ public class Setup : MonoBehaviour
     public GameObject Plane;
 
     public GameObject bombPrefab;
+    public GameObject bangPrefab;
     public GameObject characterPrefab;
 
     private EcsSystems systems;
@@ -24,7 +25,7 @@ public class Setup : MonoBehaviour
             .Add(new CharacterSyncSystem())
 
             .Add(new SpawnBombsSystem(bombPrefab, 30, 15, new Timers.SpawnTimer(5, 1, 3)))
-            .Add(new DetonatedBombBombSystem())
+            .Add(new DetonatedBombBombSystem(bangPrefab))
             .Add(new ExplosionSystem(new ExplosionDamageFromDistanceRatio(), new ExplosionDamageAbsorbByWalls(0.5f, LayerMask.GetMask("Wall"))))
 
             .Add(new CharacterDamageReleaseSystem());

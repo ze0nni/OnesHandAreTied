@@ -64,6 +64,13 @@ namespace Client {
 
     sealed class DetonatedBombBombSystem : IEcsRunSystem
     {
+        readonly GameObject bangPrefab;
+
+        public DetonatedBombBombSystem(GameObject bangPrefab)
+        {
+            this.bangPrefab = bangPrefab;
+        }
+
         readonly EcsWorld world = null;
         readonly EcsFilter<Bomb, DetonatedBomb> bombsFilter = null;
 
@@ -79,6 +86,9 @@ namespace Client {
 
                 GameObject.Destroy(bomb.view.gameObject);
                 bombEntity.Destroy();
+
+                GameObject.Instantiate(bangPrefab).GetComponent<BangView>()
+                    .Spawn(explosion.center, explosion.radius);
             }
         }
     }
