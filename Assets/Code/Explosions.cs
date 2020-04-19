@@ -73,6 +73,9 @@ namespace Client {
         }
     }
 
+    /// <summary>
+    /// Расчет урона в зависимости от расстояния до центра взрыва
+    /// </summary>
     sealed class ExplosionDamageFromDistanceRatio : ExplosionDamageComputer
     {
         public float Compute(float currentDamage, Vector3 explosionCenter, float explsionRadius, Vector3 characterPosition, float distance)
@@ -81,6 +84,9 @@ namespace Client {
         }
     }
 
+    /// <summary>
+    /// Стены поглащают часть урона
+    /// </summary>
     sealed class ExplosionDamageAbsorbByWalls : ExplosionDamageComputer {
         readonly float damageScale;
         readonly LayerMask wallMask;
