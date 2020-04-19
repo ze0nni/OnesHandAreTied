@@ -49,7 +49,7 @@ namespace Client {
             );
 
             var bombEntity = world.NewEntity();
-            var bomb = bombEntity.Set<Bomb>();
+            ref var bomb = ref bombEntity.Set<Bomb>();
 
             bomb.view = bombView;
 
@@ -59,6 +59,23 @@ namespace Client {
 
         private void OnDetonate(EcsEntity bombEntity) {
             bombEntity.Set<DetonatedBomb>();
+        }
+    }
+
+    sealed class DetonatedBombBombSystem : IEcsRunSystem
+    {
+        readonly EcsWorld world = null;
+        readonly EcsFilter<Bomb, DetonatedBomb> bombsFilter = null;
+
+        public void Run()
+        {
+            foreach (var i in bombsFilter) {
+                var bombEntity = bombsFilter.GetEntity(i);
+                var bomb = bombsFilter.Get1(i);
+
+                GameObject.Destroy(bomb.view.gameObject);
+                bombEntity.Destroy();
+            }
         }
     }
 }

@@ -20,7 +20,9 @@ public class Setup : MonoBehaviour
 #endif
 
         this.systems = new EcsSystems(world)
-            .Add(new SpawnBombsSystem(bombPrefab, 15, 15, new Timers.SpawnTimer(5, 1, 3)));
+            .Add(new SpawnBombsSystem(bombPrefab, 15, 15, new Timers.SpawnTimer(5, 1, 3)))
+            .Add(new DetonatedBombBombSystem())
+        ;
 
         this.systems.Init();
 #if UNITY_EDITOR
